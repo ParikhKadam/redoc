@@ -1,11 +1,5 @@
 import { action, observable, makeObservable } from 'mobx';
 
-import { IMenuItem } from '../MenuStore';
-import { GroupModel } from './Group.model';
-import { SecurityRequirementModel } from './SecurityRequirement';
-
-import { OpenAPIExternalDocumentation, OpenAPIServer, OpenAPIXCodeSample } from '../../types';
-
 import {
   extractExtensions,
   getOperationSummary,
@@ -17,15 +11,20 @@ import {
   sortByField,
   sortByRequired,
 } from '../../utils';
-import { ContentItemModel, ExtendedOpenAPIOperation } from '../MenuBuilder';
-import { OpenAPIParser } from '../OpenAPIParser';
-import { RedocNormalizedOptions } from '../RedocNormalizedOptions';
+
+import { GroupModel } from './Group.model';
+import { SecurityRequirementModel } from './SecurityRequirement';
 import { CallbackModel } from './Callback';
 import { FieldModel } from './Field';
-import { MediaContentModel } from './MediaContent';
 import { RequestBodyModel } from './RequestBody';
 import { ResponseModel } from './Response';
-import { SideNavStyleEnum } from '../RedocNormalizedOptions';
+import { SideNavStyleEnum } from '../types';
+
+import type { OpenAPIExternalDocumentation, OpenAPIServer, OpenAPIXCodeSample } from '../../types';
+import type { OpenAPIParser } from '../OpenAPIParser';
+import type { RedocNormalizedOptions } from '../RedocNormalizedOptions';
+import type { MediaContentModel } from './MediaContent';
+import type { ContentItemModel, ExtendedOpenAPIOperation, IMenuItem } from '../types';
 
 export interface XPayloadSample {
   lang: 'payload';
@@ -70,6 +69,7 @@ export class OperationModel implements IMenuItem {
 
   pointer: string;
   operationId?: string;
+  operationHash?: string;
   httpVerb: string;
   deprecated: boolean;
   path: string;
@@ -106,7 +106,12 @@ export class OperationModel implements IMenuItem {
 
     this.name = getOperationSummary(operationSpec);
 
-    this.sidebarLabel = options.sideNavStyle === SideNavStyleEnum.PathOnly ? this.path : this.name;
+    this.sidebarLabel =
+      options.sideNavStyle === SideNavStyleEnum.IdOnly
+        ? this.operationId || this.path
+        : options.sideNavStyle === SideNavStyleEnum.PathOnly
+        ? this.path
+        : this.name;
 
     if (this.isCallback) {
       // NOTE: Callbacks by default should not inherit the specification's global `security` definition.
@@ -118,9 +123,10 @@ export class OperationModel implements IMenuItem {
       // TODO: update getting pathInfo for overriding servers on path level
       this.servers = normalizeServers('', operationSpec.servers || operationSpec.pathServers || []);
     } else {
+      this.operationHash = operationSpec.operationId && 'operation/' + operationSpec.operationId;
       this.id =
         operationSpec.operationId !== undefined
-          ? 'operation/' + operationSpec.operationId
+          ? (parent ? parent.id + '/' : '') + this.operationHash
           : parent !== undefined
           ? parent.id + this.pointer
           : this.pointer;

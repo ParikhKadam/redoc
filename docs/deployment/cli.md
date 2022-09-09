@@ -1,10 +1,10 @@
 ---
-title: Using the Redoc CLI
-redirectFrom: 
-  - /docs/quickstart/cli/
+title: Use the Redoc CLI
+redirectFrom:
+  - /docs/redoc/quickstart/cli/
 ---
 
-# Using the Redoc CLI
+# How to use the Redoc CLI
 
 With Redoc's command-line interface you can bundle your OpenAPI definition and API documentation
 (made with Redoc) into a zero-dependency HTML file and locally render your
@@ -21,7 +21,7 @@ Or you can install `redoc-cli` using [npx](https://www.freecodecamp.org/news/npm
 
 ### Install Redoc CLI with yarn
 
-To install the `redoc-cli` package globally with yarn: 
+To install the `redoc-cli` package globally with yarn:
 
 ```bash
 yarn global add redoc-cli
@@ -29,7 +29,7 @@ yarn global add redoc-cli
 
 ### Install Redoc with npm
 
-To install the `redoc-cli` package globally with npm: 
+To install the `redoc-cli` package globally with npm:
 
 ```bash
 npm i -g redoc-cli
@@ -52,11 +52,11 @@ The CLI includes the following commands:
 
 - **`redoc-cli serve [spec]`:** Starts a local server with Redoc. You must include the required parameter, spec, which is
   a reference to an OpenAPI definition. Options include:
-    - `--ssr`: Implements a server-side rendering model. 
+    - `--ssr`: Implements a server-side rendering model.
     - `--watch`: Automatically reloads the server while you edit your OpenAPI definition.
-    - `--options`: Customizes your output using [Redoc options](https://redoc.ly/docs/api-reference-docs/configuration/).
+    - `--options`: Customizes your output using [Redoc functionality options](https://redocly.com/docs/api-reference-docs/configuration/functionality) or [Redoc theming options](https://redocly.com/docs/api-reference-docs/configuration/theming).
       To add nested options, use dot notation.
-- **`redoc-cli bundle [spec]`:** Bundles `spec` and Redoc into a zero-dependency HTML file. Options include:
+- **`redoc-cli build [spec]`:** Builds `spec` and Redoc into a zero-dependency HTML file. Options include:
     - `-t` or `--template`: Uses custom [Handlebars](https://handlebarsjs.com/) templates to render your OpenAPI definition.
     - `--templateOptions`: Adds template options you want to pass to your
       custom Handlebars template. To add options, use dot notation.
@@ -70,13 +70,13 @@ The CLI includes the following commands:
 Bundle with the main color changed to `orange`:
 
 ```bash
-redoc-cli bundle openapi.yaml --options.theme.colors.primary.main=orange
+redoc-cli build openapi.yaml --options.theme.colors.primary.main=orange
 ```
 
 Bundle using a custom Handlebars template and add custom `templateOptions`:
 
 ```bash
-redoc-cli bundle http://petstore.swagger.io/v2/swagger.json -t custom.hbs --templateOptions.metaDescription "Page meta description"
+redoc-cli build http://petstore.swagger.io/v2/swagger.json -t custom.hbs --templateOptions.metaDescription "Page meta description"
 ```
 
 Sample Handlebars template:
